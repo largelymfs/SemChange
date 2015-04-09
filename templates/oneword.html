@@ -9,12 +9,12 @@
     <meta name="mobile-web-app-capable" content="yes">
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="semantic-ui/dist/semantic.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename = "semantic-ui/dist/semantic.min.css")}}">
     <!-- endbower -->
     <!-- endbuild -->
     <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700,300&subset=latin,vietnamese' rel='stylesheet' type='text/css'>
     <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename="css/main.css") }}">
     <!-- endbuild -->
 </head>
 
@@ -38,7 +38,9 @@
             <div class="three wide column"></div>
             <div class="ten wide column">
                 <div class="ui fluid action input">
-                    <input type="text" placeholder="Please enter a word...">
+                    <form method="post" action="{{ url_for('oneword') }}">
+                        <input type="text" placeholder="Please enter a word..." name="word">
+                    </form>
                     <div class="ui blue button">Search</div>
                 </div>
             </div>
@@ -47,9 +49,9 @@
     </main>
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="js/jquery.min.js"></script>
-    <script src="semantic-ui/dist/semantic.min.js"></script>
-    <script src="js/main.js"></script>
+    <script src="{{ url_for('static', filename = "js/jquery.min.js")}}"></script>
+    <script src="{{ url_for('static', filename = "semantic-ui/dist/semantic.min.js")}}"></script>
+    <script src="{{ url_for('static', filename = "js/main.js")}}"></script>
     <!-- endbower -->
     <!-- endbuild -->
 </body>
