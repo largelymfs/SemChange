@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request
+from model import MSWord2Vec as word2vec
 
 
 
 
 app = Flask(__name__)
 app.DEBUG = True
+model = word2vec("../Data/vector_nyt-0.1.txt", "../Data/cluster_nyt-0.1.txt")
 
 def search_result_oneword(word):
     return None
@@ -29,7 +31,6 @@ def shutdown():
 @app.route('/oneword', methods=["POST", "GET"])
 def oneword():
     if request.method=='POST':
-        print request.form
         word = request.form['word']
         result = search_result_oneword(word)
     else:
@@ -38,4 +39,4 @@ def oneword():
 
 
 if __name__=="__main__":
-	app.run()
+	app.run(host = "166.111.5.226")
