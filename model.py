@@ -1,5 +1,8 @@
+# -*- coding:utf-8-*-
+
 import numpy as np
 import sys
+import numpy.linalg as LA
 
 def convert2np(raw_string):
     return np.array([float(item) for item in raw_string.split()])
@@ -46,5 +49,36 @@ class MSWord2Vec:
                 for _ in range(sense_number):
                     self.cluster[word].append(convert2np(fin.readline().strip()))
 
+    def compute_similarity(self, word1, sense1, word2, sense2):
+        embedding1 = self.sense_vectors[word1][sense1]
+        embedding2 = self.sense_vectors[word2][sense2]
+        return (np.dot(embedding1, embedding2)) / (LA.norm(embedding1) * LA.norm(embedding2))
+
+    def compute_kNN_one_sense(self, word1, sense1, k):
+        res = []
+        for word2 in self.sense_vectors:
+            for sense2 in range(len(self.sense_vectors[word2])):
+                similarity = self.compute_similarity(word1, sense1, word2, sense2)
+                res.append((word2, sense2, similarity))
+        res = sorted(res, cmp=lambda x , y : -cmp(x[2],y[2]))
+        return res[:k]
+
+    def compute_kNN(self, word1, k = 10):
+        result = []
+
+        for sense in range(len(self.sense_vectors[word1])):
+            result.append(self.compute_kNN_one_sense(word1, sense, k))
+        return result
+
+
+if __name__=="__main__":
+    model = MSWord2Vec("./../Data/vector_rmrb-0.1.txt", "./../Data/cluster_rmrb-0.1.txt")
+
+    while True:
+        word = raw_input("Please Input a word : ")
+        print word, type(word)
+        if word=='EXIT':
+            break
+        print model.compute_kNN(word, 10)
 
 
