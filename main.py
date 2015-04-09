@@ -14,8 +14,8 @@ def shutdown_server():
 
 @app.route("/")
 def hello():
-    return "hello"
-    #return render_template("index.html")
+    #return "hello"
+    return render_template("index.html")
 
 @app.route('/shutdown', methods=['POST'])
 def shutdown():
@@ -24,5 +24,4 @@ def shutdown():
 
 
 if __name__=="__main__":
-    app.run(host = "166.111.5.226", port=8888)
-
+	app.run()
