@@ -52,14 +52,16 @@
 				<div class= "{{number}}">
 				{% for itemlist in itemlists %}
 				<div class = "column">
+					<div class = "{{itemlist.message}}">
 					<div class="ui bulleted list">
-						{% for item in itemlist %}
+						{% for item in itemlist.data %}
 							<a class = "item">
 							{% for subitem in item %}
 							{{subitem}}
 							{% endfor %}
 							</a>
 						{% endfor %}
+					</div>
 					</div>
 				</div>
 				{% endfor %}

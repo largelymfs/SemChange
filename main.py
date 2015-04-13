@@ -13,10 +13,21 @@ numbers = {0 : "zero",
            5 : "five",
            6 : "six"}
 
+colors = {  0   :   "blue",
+            1   :   "yellow",
+            2   :   "green",
+            3   :   "orange",
+            4   :   "red"
+            }
+
+
 app = Flask(__name__)
 app.DEBUG = True
 #model = word2vec("../Data/vector_nyt-0.1.txt", "../Data/cluster_nyt-0.1.txt")
 model = word2vec("./../Data/vector_rmrb-0.1.txt", "../Data/cluster_rmrb-0.1.txt", "./../Data/freq_demo.txt")
+
+
+
 def search_result_oneword(word):
     global model
     return model.compute_kNN(word, 10)
@@ -40,16 +51,20 @@ def shutdown():
 
 @app.route('/oneword', methods=["POST", "GET"])
 def oneword():
-    global numbers
+    global numbers, colors
     if request.method=='POST':
         word = request.form['word']
         word = word.strip()
         word = str(word)
         result = search_result_oneword(word)
+        result_old = result
+        result_new = []
+        for i, result_item in enumerate(result_old):
+            maps = {"data" : result_item, "message": '''ui '''+colors[i] + ''' message'''}
+            result_new.append(maps)
     else:
-        result = []
-
-    return render_template("oneword.html", itemlists = result, number = numbers[len(result)]+" column row")
+        result_new = []
+    return render_template("oneword.html", itemlists = result_new, number = numbers[len(result_new)]+" column row")
 
 
 if __name__=="__main__":
