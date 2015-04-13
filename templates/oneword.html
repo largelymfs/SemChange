@@ -46,7 +46,26 @@
             </div>
             <div class="three wide column"></div>
         </div>
-    </main>
+				{% if number=="zero column row" %}
+				<p> hi </p>
+				{% else %}
+				<div class= "{{number}}">
+				{% for itemlist in itemlists %}
+				<div class = "column">
+					<div class="ui bulleted list">
+						{% for item in itemlist %}
+							<a class = "item">
+							{% for subitem in item %}
+							{{subitem}}
+							{% endfor %}
+							</a>
+						{% endfor %}
+					</div>
+				</div>
+				{% endfor %}
+				</div>
+				{% endif %}
+	</main>
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="{{ url_for('static', filename = "js/jquery.min.js")}}"></script>
