@@ -12,9 +12,9 @@ class MSWord2Vec:
         print "load vectors..."
         sys.stdout.flush()
         self.load_vectors(vector_fn)
-        print "load cluster..."
-        sys.stdout.flush()
-        self.load_vectors(cluster_fn)
+        #print "load cluster..."
+        #sys.stdout.flush()
+        #self.load_vectors(cluster_fn)
         print "load freq..."
         sys.stdout.flush()
         self.load_wordmap(freq_fn)
