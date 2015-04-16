@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 from flask import Flask, render_template, request
 from model import MSWord2Vec as word2vec
+from prob import Prob
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -26,6 +27,7 @@ app.DEBUG = True
 #model = word2vec("../Data/vector_nyt-0.1.txt", "../Data/cluster_nyt-0.1.txt")
 model = word2vec("./../Data/vector_rmrb-0.1.txt", "../Data/cluster_rmrb-0.1.txt", "./../Data/freq_demo.txt")
 
+prob = Prob("./../Data/rmrb.prob")
 
 
 def search_result_oneword(word):
@@ -62,9 +64,13 @@ def oneword():
         for i, result_item in enumerate(result_old):
             maps = {"data" : result_item, "message": '''ui '''+colors[i] + ''' message'''}
             result_new.append(maps)
+        TSV_String = prob.search(word)
     else:
         result_new = []
-    return render_template("oneword.html", itemlists = result_new, number = numbers[len(result_new)]+" column row")
+        TSV_String = prob.search("$$$")
+    print TSV_String
+    TSV_String = "\"date\t0\t1\t2\n11\t1.0\t1.0\t1.0\""
+    return render_template("oneword.html", itemlists = result_new, number = numbers[len(result_new)]+" column row", TSV_String = TSV_String)
 
 
 if __name__=="__main__":
