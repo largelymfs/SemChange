@@ -38,14 +38,19 @@
             <div class="three wide column"></div>
             <div class="ten wide column">
                 <div class="ui fluid action input">
-                    <form method="post" action="{{ url_for('oneword') }}">
-                        <input type="text" placeholder="Please enter a word..." name="word">
+                    <form method="post" action="{{ url_for('oneword') }}" id="search_form" >
+                        <input type="text" placeholder="Please enter a word..." name="word" id="submit">
                     </form>
-                    <div class="ui blue button">Search</div>
+					<div class="ui blue button" onclick = "Search()">Search</div>
                 </div>
             </div>
             <div class="three wide column"></div>
         </div>
+
+	<div class= "row">
+		<div class = "column" id = "graph">
+		</div>
+	</div>
 				{% if number=="zero column row" %}
 				<p> hi </p>
 				{% else %}
@@ -67,10 +72,19 @@
 				{% endfor %}
 				</div>
 				{% endif %}
-
-
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
+function Search(){
+  var term = $("#submit").val();
+  var objurl = $("#search_form").attr("action");
+  //objurl = "/" + objurl;
+  console.log(objurl);
+  console.log(term);
+  $.post(objurl, {
+word : term}, function(data){
+document.write(data);
+});
+}
     var margin = {
             top: 20,
             right: 20,
@@ -83,16 +97,10 @@ function heredoc(fn) {
     return fn.toString().split('\n').slice(1,-1).join('\n') + '\n'
 }
 
-var TSV_data = heredoc(function(){/*
-date    0       1       2
-11  0.612699356853  0.34332131306   0.0439793300866
-12  0.601697730209  0.35866396014   0.0396383096512
-13  0.549980047885  0.393505586592  0.0565143655227
- */});
-var  TSV_data = "date\t0\t1\t2\n11\t0.612699356853\t0.34332131306\t0.0439793300866\n12\t0.5\t0.3\t0.2";
-
-
-    var parseDate = d3.time.format("%y").parse,
+//var  TSV_data = "date\t0\t1\t2\n11\t0.612699356853\t0.34332131306\t0.0439793300866\n12\t0.5\t0.3\t0.2";
+    var TSV_data = {{TSV_String | safe}};
+if (TSV_data.length > 10){
+    var parseDate = d3.time.format("%Y").parse,
         formatPercent = d3.format(".0%");
 
     var x = d3.time.scale()
@@ -128,7 +136,7 @@ var  TSV_data = "date\t0\t1\t2\n11\t0.612699356853\t0.34332131306\t0.04397933008
             return d.values;
         });
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("#graph").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -192,11 +200,6 @@ var  TSV_data = "date\t0\t1\t2\n11\t0.612699356853\t0.34332131306\t0.04397933008
 
     var data = d3.tsv.parse(TSV_data);
 
-    var s = [
-  {"Year": "1997", "Make": "Ford", "Model": "E350", "Length": "2.34"},
-  {"Year": "2000", "Make": "Mercury", "Model": "Cougar", "Length": "2.38"}
-];
-console.info(s);
     color.domain(d3.keys(data[0]).filter(function(key) {
             return key !== "date";
         }));
@@ -205,8 +208,6 @@ console.info(s);
         data.forEach(function(d) {
             d.date = parseDate(d.date);
         });
-        alert("hello");
-        console.info(data[0]);
 
         var browsers = stack(color.domain().map(function(name) {
             return {
@@ -253,10 +254,9 @@ console.info(s);
         svg.append("g")
             .attr("class", "y axis")
             .call(yAxis);
-
+}
 
     </script>
-
 
 	</main>
     <!-- build:js scripts/vendor.js -->

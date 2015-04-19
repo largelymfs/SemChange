@@ -34,7 +34,7 @@ class Prob:
                     words = fin.readline().strip().split()
                     sense = int(words[0])
                     self.data[word][sense] = {}
-                    self.data[word][sense] = [float(item) for item in words[1:]]
+                    self.data[word][sense] = [float(item) * 100 for item in words[1:]]
 
     def search(self, word):
         if word not in self.data:
@@ -45,14 +45,14 @@ class Prob:
             self.printto("date")
             result = data_items.keys()
             for result_item in result:
-                self.printto("\t")
+                self.printto("\\t")
                 self.printto(result_item)
                 l = len(data_items[result_item])
             for i in range(l):
-                self.printto("\n")
-                self.printto(50+i)
+                self.printto("\\n")
+                self.printto(1950+i)
                 for result_item in result:
-                    self.printto("\t")
+                    self.printto("\\t")
                     self.printto(data_items[result_item][i])
         return "\""+self.output +"\""
 

@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, Markup
 from model import MSWord2Vec as word2vec
 from prob import Prob
 import sys
@@ -56,6 +56,7 @@ def oneword():
     global numbers, colors
     if request.method=='POST':
         word = request.form['word']
+        print request.form
         word = word.strip()
         word = str(word)
         result = search_result_oneword(word)
@@ -69,7 +70,6 @@ def oneword():
         result_new = []
         TSV_String = prob.search("$$$")
     print TSV_String
-    TSV_String = "\"date\t0\t1\t2\n11\t1.0\t1.0\t1.0\""
     return render_template("oneword.html", itemlists = result_new, number = numbers[len(result_new)]+" column row", TSV_String = TSV_String)
 
 
