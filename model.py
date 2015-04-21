@@ -13,8 +13,6 @@ class MSWord2Vec:
         sys.stdout.flush()
         self.load_vectors(vector_fn)
         #print "load cluster..."
-        #sys.stdout.flush()
-        #self.load_vectors(cluster_fn)
         print "load freq..."
         sys.stdout.flush()
         self.load_wordmap(freq_fn)
@@ -63,7 +61,7 @@ class MSWord2Vec:
         embedding2 = self.sense_vectors[word2][sense2]
         return (np.dot(embedding1, embedding2)) / (LA.norm(embedding1) * LA.norm(embedding2))
 
-    def compute_kNN_one_sense(self, word1, sense1, k):
+    def compute_kNN_one_sense(self, word1, sense1, kmin, kmax):
         res = []
         for word2 in self.wordmap:
             if word2==word1:
@@ -72,15 +70,18 @@ class MSWord2Vec:
                 similarity = self.compute_similarity(word1, sense1, word2, sense2)
                 res.append((word2, sense2, similarity))
         res = sorted(res, cmp=lambda x , y : -cmp(x[2],y[2]))
-        return res[:k]
+        return res[:kmin], res[:kmax]
 
-    def compute_kNN(self, word1, k = 10):
-        result = []
+    def compute_kNN(self, word1, kmin=10, kmax=100):
+        result_min = []
+        result_max = []
         if word1 not in self.sense_vectors:
             return []
         for sense in range(len(self.sense_vectors[word1])):
-            result.append(self.compute_kNN_one_sense(word1, sense, k))
-        return result
+            resmin,resmax = self.compute_kNN_one_sense(word1, sense, kmin, kmax)
+            result_min.append(resmin)
+            result_max.append(resmax)
+        return result_min,result_max
 
 
 if __name__=="__main__":

@@ -4,7 +4,7 @@
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
-
+import copy
 
 
 class Prob:
@@ -17,6 +17,24 @@ class Prob:
 
     def printto(self, args):
         self.output = self.output + str(args)
+
+
+    def smooth_data(self, l,smooth=3):
+        result = []
+        for id in xrange(len(l)):
+            start = max(0, id - smooth)
+            finish = min(len(l)-1, id+smooth)
+            res = 0.0
+            for tmp in xrange(start, finish+1):
+                res +=l[tmp]
+            res = res * (1./ float(finish - start + 1))
+            result.append(res)
+        return result
+
+    def smooth(self, smooth = 1):
+        for word in self.data.keys():
+            for sense in self.data[word]:
+                self.data[word][sense] = self.smooth_data(self.data[word][sense])
 
     def load(self, filename):
         self.data = {}
@@ -36,10 +54,15 @@ class Prob:
                     self.data[word][sense] = {}
                     self.data[word][sense] = [float(item) * 100 for item in words[1:]]
 
-    def search(self, word):
+    def search(self, word, smooth = 3):
         if word not in self.data:
             return "\"\""
-        data_items = self.data[word]
+        data_items = copy.deepcopy(self.data[word])
+        print data_items
+        for key in data_items.keys():
+            data_items[key] = self.smooth_data(data_items[key], smooth)
+        print data_items
+
         self.output = ""
         with open("./templates/data.tsv", "w") as fout:
             self.printto("date")
@@ -57,7 +80,7 @@ class Prob:
         return "\""+self.output +"\""
 
 if __name__=="__main__":
-    s = Prob("./../Data/rmrb.prob")
+    s = Prob("./../NewData/rmrb.prob.all")
     while True:
         word = raw_input("Please input a word :  ")
         if word == "EXIT":

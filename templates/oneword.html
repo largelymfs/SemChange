@@ -75,6 +75,7 @@
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
 function Search(){
+	$("#classA").modal("show");
   var term = $("#submit").val();
   var objurl = $("#search_form").attr("action");
   //objurl = "/" + objurl;
@@ -91,8 +92,8 @@ document.write(data);
             bottom: 30,
             left: 50
         },
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        width = 864 - margin.left - margin.right,
+        height = 450 - margin.top - margin.bottom;
 function heredoc(fn) {
     return fn.toString().split('\n').slice(1,-1).join('\n') + '\n'
 }
@@ -203,7 +204,6 @@ if (TSV_data.length > 10){
     color.domain(d3.keys(data[0]).filter(function(key) {
             return key !== "date";
         }));
-        console.info(data[0]);
 
         data.forEach(function(d) {
             d.date = parseDate(d.date);
@@ -237,7 +237,8 @@ if (TSV_data.length > 10){
             })
             .style("fill", function(d) {
                 return color(d.name);
-            });
+				//return color(d.division);
+			});
 
         browser.append("text")
             .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
@@ -259,6 +260,11 @@ if (TSV_data.length > 10){
     </script>
 
 	</main>
+
+	<div class="ui modal" id = "classA">
+		<i class="close icon"></i>
+	</div>
+
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="{{ url_for('static', filename = "js/jquery.min.js")}}"></script>
