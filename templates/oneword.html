@@ -73,6 +73,7 @@
         <script src="http://d3js.org/d3.v3.js"></script>
         <script>
         function Search() {
+            showModel("classA");
             var term = $("#submit").val();
             var objurl = $("#search_form").attr("action");
             //objurl = "/" + objurl;
@@ -83,6 +84,9 @@
             }, function(data) {
                 document.write(data);
             });
+        }
+        function showModel(name){
+            $("#"+name).modal("show");
         }
 
         var margin = {
