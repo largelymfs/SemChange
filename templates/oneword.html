@@ -59,7 +59,7 @@
                 <div class="{{itemlist.message}}">
                     <div class="ui bulleted list">
                         {% for item in itemlist.data %}
-                        <a class="item">
+                        <a class="item" onclick="{{ itemlist.functionname }}">
                             {% for subitem in item %}
                             {{subitem}}
                             {% endfor %}
