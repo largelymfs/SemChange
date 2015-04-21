@@ -221,9 +221,20 @@
 
     <div class="ui modal" id = "{{modal.modalname}}">
         <i class="close icon"></i>
+        <div class="ui yellow message">
+            <div class="ui bulleted list">
+                {% for item in modal.data %}
+                <a class="item">
+                    {% for subitem in item %}
+                    {{subitem}}
+                    {% endfor %}
+                </a> 
+                {% endfor %}
+            </div>
+        </div>
     </div>
     {% endfor %}
-    
+
     {% endif %}
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
