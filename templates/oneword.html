@@ -9,12 +9,12 @@
     <meta name="mobile-web-app-capable" content="yes">
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="{{ url_for('static', filename = "semantic-ui/dist/semantic.min.css")}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename = " semantic-ui/dist/semantic.min.css ")}}">
     <!-- endbower -->
     <!-- endbuild -->
     <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700,300&subset=latin,vietnamese' rel='stylesheet' type='text/css'>
     <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="{{ url_for('static', filename="css/main.css") }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename=" css/main.css ") }}">
     <!-- endbuild -->
 </head>
 
@@ -38,238 +38,250 @@
             <div class="three wide column"></div>
             <div class="ten wide column">
                 <div class="ui fluid action input">
-                    <form method="post" action="{{ url_for('oneword') }}" id="search_form" >
+                    <form method="post" action="{{ url_for('oneword') }}" id="search_form">
                         <input type="text" placeholder="Please enter a word..." name="word" id="submit">
                     </form>
-					<div class="ui blue button" onclick = "Search()">Search</div>
+                    <div class="ui blue button" onclick="Search()">Search</div>
                 </div>
             </div>
             <div class="three wide column"></div>
         </div>
+        <div class="row">
+            <div class="column" id="graph">
+            </div>
+        </div>
+        {% if number=="zero column row" %}
+        <p> hi </p>
+        {% else %}
+        <div class="{{number}}">
+            {% for itemlist in itemlists %}
+            <div class="column">
+                <div class="{{itemlist.message}}">
+                    <div class="ui bulleted list">
+                        {% for item in itemlist.data %}
+                        <a class="item">
+                            {% for subitem in item %}
+                            {{subitem}}
+                            {% endfor %}
+                            </a> {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <script src="http://d3js.org/d3.v3.js"></script>
+        <script>
+        function Search() {
+            Show("classA");
+            var term = $("#submit").val();
+            var objurl = $("#search_form").attr("action");
+            //objurl = "/" + objurl;
+            console.log(objurl);
+            console.log(term);
+            $.post(objurl, {
+                word: term
+            }, function(data) {
+                document.write(data);
+            });
+        }
+        function Show(name){
+            $("#"+name).modal("show");
+        }
+        var margin = {
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 50
+            },
+            width = 864 - margin.left - margin.right,
+            height = 450 - margin.top - margin.bottom;
 
-	<div class= "row">
-		<div class = "column" id = "graph">
-		</div>
-	</div>
-				{% if number=="zero column row" %}
-				<p> hi </p>
-				{% else %}
-				<div class= "{{number}}">
-				{% for itemlist in itemlists %}
-				<div class = "column">
-					<div class = "{{itemlist.message}}">
-					<div class="ui bulleted list">
-						{% for item in itemlist.data %}
-							<a class = "item">
-							{% for subitem in item %}
-							{{subitem}}
-							{% endfor %}
-							</a>
-						{% endfor %}
-					</div>
-					</div>
-				</div>
-				{% endfor %}
-				</div>
-				{% endif %}
-<script src="http://d3js.org/d3.v3.js"></script>
-<script>
-function Search(){
-	$("#classA").modal("show");
-  var term = $("#submit").val();
-  var objurl = $("#search_form").attr("action");
-  //objurl = "/" + objurl;
-  console.log(objurl);
-  console.log(term);
-  $.post(objurl, {
-word : term}, function(data){
-document.write(data);
-});
-}
-    var margin = {
-            top: 20,
-            right: 20,
-            bottom: 30,
-            left: 50
-        },
-        width = 864 - margin.left - margin.right,
-        height = 450 - margin.top - margin.bottom;
-function heredoc(fn) {
-    return fn.toString().split('\n').slice(1,-1).join('\n') + '\n'
-}
+        function heredoc(fn) {
+            return fn.toString().split('\n').slice(1, -1).join('\n') + '\n'
+        }
 
-//var  TSV_data = "date\t0\t1\t2\n11\t0.612699356853\t0.34332131306\t0.0439793300866\n12\t0.5\t0.3\t0.2";
-    var TSV_data = {{TSV_String | safe}};
-if (TSV_data.length > 10){
-    var parseDate = d3.time.format("%Y").parse,
-        formatPercent = d3.format(".0%");
+        //var  TSV_data = "date\t0\t1\t2\n11\t0.612699356853\t0.34332131306\t0.0439793300866\n12\t0.5\t0.3\t0.2";
+        var TSV_data = {
+            {
+                TSV_String | safe
+            }
+        };
+        if (TSV_data.length > 10) {
+            var parseDate = d3.time.format("%Y").parse,
+                formatPercent = d3.format(".0%");
 
-    var x = d3.time.scale()
-        .range([0, width]);
+            var x = d3.time.scale()
+                .range([0, width]);
 
-    var y = d3.scale.linear()
-        .range([height, 0]);
+            var y = d3.scale.linear()
+                .range([height, 0]);
 
-    var color = d3.scale.category20();
+            var color = d3.scale.category20();
 
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom");
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
 
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left")
-        .tickFormat(formatPercent);
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .tickFormat(formatPercent);
 
-    var area = d3.svg.area()
-        .x(function(d) {
-            return x(d.date);
-        })
-        .y0(function(d) {
-            return y(d.y0);
-        })
-        .y1(function(d) {
-            return y(d.y0 + d.y);
-        });
+            var area = d3.svg.area()
+                .x(function(d) {
+                    return x(d.date);
+                })
+                .y0(function(d) {
+                    return y(d.y0);
+                })
+                .y1(function(d) {
+                    return y(d.y0 + d.y);
+                });
 
-    var stack = d3.layout.stack()
-        .values(function(d) {
-            return d.values;
-        });
+            var stack = d3.layout.stack()
+                .values(function(d) {
+                    return d.values;
+                });
 
-    var svg = d3.select("#graph").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            var svg = d3.select("#graph").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // d3.tsv("data.tsv", function(error, data) {
-    //     color.domain(d3.keys(data[0]).filter(function(key) {
-    //         return key !== "date";
-    //     }));
+            // d3.tsv("data.tsv", function(error, data) {
+            //     color.domain(d3.keys(data[0]).filter(function(key) {
+            //         return key !== "date";
+            //     }));
 
-    //     data.forEach(function(d) {
-    //         d.date = parseDate(d.date);
-    //     });
+            //     data.forEach(function(d) {
+            //         d.date = parseDate(d.date);
+            //     });
 
-    //     var browsers = stack(color.domain().map(function(name) {
-    //         return {
-    //             name: name,
-    //             values: data.map(function(d) {
-    //                 return {
-    //                     date: d.date,
-    //                     y: d[name] / 100
-    //                 };
-    //             })
-    //         };
-    //     }));
+            //     var browsers = stack(color.domain().map(function(name) {
+            //         return {
+            //             name: name,
+            //             values: data.map(function(d) {
+            //                 return {
+            //                     date: d.date,
+            //                     y: d[name] / 100
+            //                 };
+            //             })
+            //         };
+            //     }));
 
-    //     x.domain(d3.extent(data, function(d) {
-    //         return d.date;
-    //     }));
+            //     x.domain(d3.extent(data, function(d) {
+            //         return d.date;
+            //     }));
 
-    //     var browser = svg.selectAll(".browser")
-    //         .data(browsers)
-    //         .enter().append("g")
-    //         .attr("class", "browser");
+            //     var browser = svg.selectAll(".browser")
+            //         .data(browsers)
+            //         .enter().append("g")
+            //         .attr("class", "browser");
 
-    //     browser.append("path")
-    //         .attr("class", "area")
-    //         .attr("d", function(d) {
-    //             return area(d.values);
-    //         })
-    //         .style("fill", function(d) {
-    //             return color(d.name);
-    //         });
+            //     browser.append("path")
+            //         .attr("class", "area")
+            //         .attr("d", function(d) {
+            //             return area(d.values);
+            //         })
+            //         .style("fill", function(d) {
+            //             return color(d.name);
+            //         });
 
-    //     browser.append("text")
-    //         .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-    //         .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.y0 + d.value.y / 2) + ")"; })
-    //         .attr("x", -6)
-    //         .attr("dy", ".35em")
-    //         .text(function(d) { return d.name; });
+            //     browser.append("text")
+            //         .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+            //         .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.y0 + d.value.y / 2) + ")"; })
+            //         .attr("x", -6)
+            //         .attr("dy", ".35em")
+            //         .text(function(d) { return d.name; });
 
-    //     svg.append("g")
-    //         .attr("class", "x axis")
-    //         .attr("transform", "translate(0," + height + ")")
-    //         .call(xAxis);
+            //     svg.append("g")
+            //         .attr("class", "x axis")
+            //         .attr("transform", "translate(0," + height + ")")
+            //         .call(xAxis);
 
-    //     svg.append("g")
-    //         .attr("class", "y axis")
-    //         .call(yAxis);
-    // });
+            //     svg.append("g")
+            //         .attr("class", "y axis")
+            //         .call(yAxis);
+            // });
 
-    var data = d3.tsv.parse(TSV_data);
+            var data = d3.tsv.parse(TSV_data);
 
-    color.domain(d3.keys(data[0]).filter(function(key) {
-            return key !== "date";
-        }));
+            color.domain(d3.keys(data[0]).filter(function(key) {
+                return key !== "date";
+            }));
 
-        data.forEach(function(d) {
-            d.date = parseDate(d.date);
-        });
+            data.forEach(function(d) {
+                d.date = parseDate(d.date);
+            });
 
-        var browsers = stack(color.domain().map(function(name) {
-            return {
-                name: name,
-                values: data.map(function(d) {
+            var browsers = stack(color.domain().map(function(name) {
+                return {
+                    name: name,
+                    values: data.map(function(d) {
+                        return {
+                            date: d.date,
+                            y: d[name] / 100
+                        };
+                    })
+                };
+            }));
+
+            x.domain(d3.extent(data, function(d) {
+                return d.date;
+            }));
+
+            var browser = svg.selectAll(".browser")
+                .data(browsers)
+                .enter().append("g")
+                .attr("class", "browser");
+
+            browser.append("path")
+                .attr("class", "area")
+                .attr("d", function(d) {
+                    return area(d.values);
+                })
+                .style("fill", function(d) {
+                    return color(d.name);
+                    //return color(d.division);
+                });
+
+            browser.append("text")
+                .datum(function(d) {
                     return {
-                        date: d.date,
-                        y: d[name] / 100
+                        name: d.name,
+                        value: d.values[d.values.length - 1]
                     };
                 })
-            };
-        }));
+                .attr("transform", function(d) {
+                    return "translate(" + x(d.value.date) + "," + y(d.value.y0 + d.value.y / 2) + ")";
+                })
+                .attr("x", -6)
+                .attr("dy", ".35em")
+                .text(function(d) {
+                    return d.name;
+                });
 
-        x.domain(d3.extent(data, function(d) {
-            return d.date;
-        }));
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
 
-        var browser = svg.selectAll(".browser")
-            .data(browsers)
-            .enter().append("g")
-            .attr("class", "browser");
-
-        browser.append("path")
-            .attr("class", "area")
-            .attr("d", function(d) {
-                return area(d.values);
-            })
-            .style("fill", function(d) {
-                return color(d.name);
-				//return color(d.division);
-			});
-
-        browser.append("text")
-            .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-            .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.y0 + d.value.y / 2) + ")"; })
-            .attr("x", -6)
-            .attr("dy", ".35em")
-            .text(function(d) { return d.name; });
-
-        svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-
-        svg.append("g")
-            .attr("class", "y axis")
-            .call(yAxis);
-}
-
-    </script>
-
-	</main>
-
-	<div class="ui modal" id = "classA">
-		<i class="close icon"></i>
-	</div>
-
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+        }
+        </script>
+    </main>
+    <div class="ui modal" id="classA">
+        <i class="close icon"></i>
+    </div>
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="{{ url_for('static', filename = "js/jquery.min.js")}}"></script>
-    <script src="{{ url_for('static', filename = "semantic-ui/dist/semantic.min.js")}}"></script>
-    <script src="{{ url_for('static', filename = "js/main.js")}}"></script>
+    <script src="{{ url_for('static', filename = " js/jquery.min.js ")}}"></script>
+    <script src="{{ url_for('static', filename = " semantic-ui/dist/semantic.min.js ")}}"></script>
+    <script src="{{ url_for('static', filename = " js/main.js ")}}"></script>
     <!-- endbower -->
     <!-- endbuild -->
 </body>
