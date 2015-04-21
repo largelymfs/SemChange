@@ -59,7 +59,7 @@
                 <div class="{{itemlist.message}}">
                     <div class="ui bulleted list">
                         {% for item in itemlist.data %}
-                        <a class="item" onclick=itemlist.functionname>
+                        <a class="item" onclick={{itemlist.functionname}}>
                             {% for subitem in item %}
                             {{subitem}}
                             {% endfor %}
@@ -214,9 +214,17 @@
         }
         </script>
     </main>
-    <div class="ui modal" id="classA">
+
+    {% if number!="zero column row" %}
+
+    {% for modal in modallist %}
+
+    <div class="ui modal" id = "{{modal.modalname}}">
         <i class="close icon"></i>
     </div>
+    {% endfor %}
+    
+    {% endif %}
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="{{url_for('static', filename = "js/jquery.min.js")}}"></script>
