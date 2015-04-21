@@ -41,7 +41,7 @@
                     <form method="post" action="{{ url_for('oneword') }}" id="search_form">
                         <input type="text" placeholder="Please enter a word..." name="word" id="submit">
                     </form>
-                    <div class="ui blue button" onclick="Search('classA')">Search</div>
+                    <div class="ui blue button" onclick="Search()">Search</div>
                 </div>
             </div>
             <div class="three wide column"></div>
@@ -73,7 +73,6 @@
         <script src="http://d3js.org/d3.v3.js"></script>
         <script>
         function Search(n) {
-            showModel(n);
             var term = $("#submit").val();
             var objurl = $("#search_form").attr("action");
             //objurl = "/" + objurl;
